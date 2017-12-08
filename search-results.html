@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+
+
+<meta charset="utf-8">
+
+<!-- load D3js -->
+<script src="//d3plus.org/js/d3.js"></script>
+
+<!-- load D3plus after D3js -->
+<script src="//d3plus.org/js/d3plus.js"></script>
+
+<!-- create container element for visualization -->
+<div id="viz"></div>
+
+<script>
+  //bring in data from server
+  var data = JSON.parse({{data|tojson|safe}});
+
+  //console.log(other_data);
+  // instantiate d3plus
+  var visualization = d3plus.viz()
+    .container("#viz")  // container DIV to hold the visualization
+    .data(data)  // data to use with the visualization
+    .type("line")       // visualization type
+    .id("name")         // key for which our data is unique on
+    .text("name")       // key to use for display text
+    .y("value")         // key to use for y-axis
+    .x("date")          // key to use for x-axis
+    .draw()             // finally, draw the visualization!
+</script>
+
+
+
+<div class="row">
+
+  <div class="col-md-12">
+  
+    <h3>Search Results</h3>
+
+    <p>You searched for "{{keywords}}"</p>
+
+    <p>In the US Mainstream Media online there have {{ sentenceCount }} sentences matching your search from {{start_date}} to {{end_date}}.</p>
+
+  </div>
+
+</div>    
+
+
+
+{% endblock %}
