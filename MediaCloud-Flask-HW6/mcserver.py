@@ -15,13 +15,45 @@ config.read(os.path.join(basedir, 'settings.config'))
 logging.basicConfig(level=logging.DEBUG)
 logging.info("Starting the MediaCloud example Flask app!")
 
-
 # clean a mediacloud api client
 mc = mediacloud.api.MediaCloud(config.get('mediacloud','api_key') )
 print(config.get('mediacloud','api_key'))
 
+
+
+## change setting.config API_KEY to Heroku
+## move API key to an evironmental variable
+
 app = Flask(__name__)
 
+##############################################################
+
+## changing logging configuration
+# if not app.debug and os.environ.get('HEROKU') is None:
+#     import logging
+#     from logging.handlers import RotatingFileHandler
+#     file_handler = RotatingFileHandler('errors.log', 'a', 1 * 1024 * 1024, 10)
+#     file_handler.setLevel(logging.INFO)
+#     file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+#     app.logger.addHandler(file_handler)
+#     app.logger.setLevel(logging.INFO)
+#     app.logger.info('mediacloud app')
+
+# if os.environ.get('HEROKU') is not None:
+#     import logging
+#     stream_handler = logging.StreamHandler()
+#     app.logger.addHandler(stream_handler)
+#     app.logger.setLevel(logging.INFO)
+#     app.logger.info('mediacloud app')
+
+# ### changing mediacloud settings.config api_key to heroku
+# # heroku_api_key = os.environ.get('API_KEY')
+
+# ### clean a mediacloud api client
+# # mc = mediacloud.api.MediaCloud( heroku_api_key )
+# mc = mediacloud.api.MediaCloud( config.get('mediacloud','api_key') )
+
+# ##############################################################
 
 @app.route("/")
 def home():
@@ -68,6 +100,14 @@ def search_results():
                            start_date = start_date, 
                            end_date = end_date )
 
+
+# ### need to change for Heroku ###
+# ### Heroku doesn't run, so have to pass through gunicorn ###
+# if __name__ == "__main__":
+#     #app.debug = True
+#     app.run(debug = True, host='0.0.0.0', port=8080, passthrough_errors=True)
+#     #app.run()
+
 if __name__ == "__main__":
-    app.debug = True
-    app.run()
+  app.debug = True
+  app.run()
